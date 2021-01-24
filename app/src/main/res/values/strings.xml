@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">All in one</string>
+    <string name="delete">Հեռացնել</string>
+    <string name="add">Ներմուծել</string>
+    <string name="refresh">Թարմացնել</string>
+    <string name="get_1_method">Get 1 method</string>
+    <string name="get_2_method">Get 2 method</string>
+    <string name="post_method">Post method</string>
+</resources>
