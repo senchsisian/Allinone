@@ -19,3 +19,21 @@ import com.google.gson.annotations.SerializedName
          val avatar:String=""
      }
 }
+
+class ProductModel {
+    @SerializedName("data")
+    val data:ResponseData?=null
+
+    class ResponseData{
+        @SerializedName("id")
+        val idGet:Int=0
+        @SerializedName("email")
+        val email:String=""
+        @SerializedName("first_name")
+        val firstName:String=""
+        @SerializedName("last_name")
+        val lastName:String=""
+        @SerializedName("avatar")
+        val avatar:String=""
+    }
+}
