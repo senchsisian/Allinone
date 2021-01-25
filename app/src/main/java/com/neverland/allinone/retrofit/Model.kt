@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 
      class ResponseData{
          @SerializedName("id")
-         val idGet:Int=0
+         val id:Int=0
          @SerializedName("email")
          val email:String=""
          @SerializedName("first_name")
@@ -26,14 +26,14 @@ class ProductModel {
 
     class ResponseData{
         @SerializedName("id")
-        val idGet:Int=0
-        @SerializedName("email")
-        val email:String=""
-        @SerializedName("first_name")
-        val firstName:String=""
-        @SerializedName("last_name")
-        val lastName:String=""
-        @SerializedName("avatar")
-        val avatar:String=""
+        val id:Int=0
+        @SerializedName("name")
+        val name:String=""
+        @SerializedName("description")
+        val description:String=""
+        @SerializedName("price")
+        val price:String=""
+        @SerializedName("discount_amount")
+        val discountAmount:String=""
     }
 }

@@ -8,6 +8,7 @@ import android.widget.RadioButton
 import androidx.room.Room
 import com.neverland.allinone.photo.PhotoDB
 import com.neverland.allinone.photo.PhotoModel
+import com.neverland.allinone.retrofit.GetMethodProducts
 import com.neverland.allinone.retrofit.GetMethodUsers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -106,7 +107,8 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.IO) {
             val networkService = retrofit.create(GetMethodUsers::class.java)
-            val getId = networkService.getUsersFunction().execute().body()?.data?.idGet
+            val getData=networkService.getUsersFunction().execute().body()?.data
+            val getId = networkService.getUsersFunction().execute().body()?.data?.id
             val getEmail = networkService.getUsersFunction().execute().body()?.data?.email
             val getFirstName = networkService.getUsersFunction().execute().body()?.data?.firstName
             val getLastName = networkService.getUsersFunction().execute().body()?.data?.lastName
@@ -121,12 +123,13 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         GlobalScope.launch(Dispatchers.IO) {
-            val networkService = retrofit.create(GetMethodUsers::class.java)
-            val getId = networkService.getUsersFunction().execute().body()?.data?.idGet
-            val getEmail = networkService.getUsersFunction().execute().body()?.data?.email
-            val getFirstName = networkService.getUsersFunction().execute().body()?.data?.firstName
-            val getLastName = networkService.getUsersFunction().execute().body()?.data?.lastName
-            val getAvatar = networkService.getUsersFunction().execute().body()?.data?.avatar
+            val networkService = retrofit.create(GetMethodProducts::class.java)
+            val getData=networkService.getProductFunction().execute().body()?.data
+            val getId = networkService.getProductFunction().execute().body()?.data?.id
+            val getName = networkService.getProductFunction().execute().body()?.data?.name
+            val getDescription = networkService.getProductFunction().execute().body()?.data?.description
+            val getPrice = networkService.getProductFunction().execute().body()?.data?.price
+            val getDiscountAmount = networkService.getProductFunction().execute().body()?.data?.discountAmount
         }
     }
 
