@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
  class UserModel {
      @SerializedName("data")
-     val data:ResponseData?=null
+     val data:Array<ResponseData>?=null
 
      class ResponseData{
          @SerializedName("id")
@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName
 
 class ProductModel {
     @SerializedName("data")
-    val data:ResponseData?=null
+    val data:Array<ResponseData>?=null
 
     class ResponseData{
         @SerializedName("id")

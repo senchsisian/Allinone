@@ -1,21 +1,22 @@
 package com.neverland.allinone
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.RadioButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
 import com.neverland.allinone.photo.PhotoDB
 import com.neverland.allinone.photo.PhotoModel
 import com.neverland.allinone.retrofit.GetMethodProducts
 import com.neverland.allinone.retrofit.GetMethodUsers
+import com.neverland.allinone.retrofit.ProductModel
+import com.neverland.allinone.retrofit.UserModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import kotlin.random.Random
 
 const val DATABASE_VERSION =5
@@ -29,7 +30,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addButton: Button
     private lateinit var removeButton: Button
     private lateinit var photoDB: PhotoDB
-    private val photoSet = mutableSetOf<PhotoModel>()
+    private val photoList = mutableListOf<PhotoModel>()
+    private var userList = mutableListOf<UserModel.ResponseData>()
+    private var productList = mutableListOf<ProductModel.ResponseData>()
     private lateinit var getElement: PhotoModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,26 +55,17 @@ class MainActivity : AppCompatActivity() {
                 getFirstButton.isChecked -> {
                     getSecondButton.isEnabled = false
                     postButton.isEnabled = false
-                    GlobalScope.launch(Dispatchers.IO) {
-
-                    }
+                    userList=getUsersInfo()
                 }
                 getSecondButton.isChecked -> {
                     getFirstButton.isEnabled = false
                     postButton.isEnabled = false
+                    productList=getProductInfo()
                 }
                 postButton.isChecked -> {
                     getSecondButton.isEnabled = false
                     getFirstButton.isEnabled = false
-
-                    val i = Random.nextInt()
-                    getElement = PhotoModel(i, "James Bond $i")
-                    photoSet.add(getElement)
-                    Log.v("photoSet","-$photoSet")
-                    GlobalScope.launch(Dispatchers.IO) {
-                        photoDB.getPhotoDao().addPhotos(getElement)
-                    }
-
+                    funAddOrRemove(true,photoList)
                 }
             }
         }
@@ -88,18 +82,38 @@ class MainActivity : AppCompatActivity() {
                 getSecondButton.isChecked -> {
                 }
                 postButton.isChecked -> {
-                    GlobalScope.launch(Dispatchers.IO) {
-                        for (i in photoSet.size-1..0){
-                            photoDB.getPhotoDao().removePhoto(photoSet.elementAt(i))
-                        }
-                        photoSet.clear()
-                    }
+                    funAddOrRemove(false,photoList)
                 }
             }
         }
     }
 
-    fun getUsersInfo(){
+    private fun funAddOrRemove(canAdd:Boolean,someList:MutableList<PhotoModel>){
+        when{
+            canAdd->{
+                val i = Random.nextInt()
+                getElement = PhotoModel(i, "James Bond $i")
+                someList.add(getElement)
+                Log.v("photoSet","-$someList")
+                GlobalScope.launch(Dispatchers.IO) {
+                    photoDB.getPhotoDao().addPhotos(getElement)
+                }
+
+            }
+            else->{
+                GlobalScope.launch(Dispatchers.IO) {
+                    for (i in someList.size-1..0){
+                        photoDB.getPhotoDao().removePhoto(someList.elementAt(i))
+                    }
+                    someList.clear()
+                }
+            }
+        }
+
+    }
+
+    private fun getUsersInfo():MutableList<UserModel.ResponseData>{
+        var getData= mutableListOf<UserModel.ResponseData>()
         val retrofit= Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://reqres.in/")
@@ -107,16 +121,13 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.IO) {
             val networkService = retrofit.create(GetMethodUsers::class.java)
-            val getData=networkService.getUsersFunction().execute().body()?.data
-            val getId = networkService.getUsersFunction().execute().body()?.data?.id
-            val getEmail = networkService.getUsersFunction().execute().body()?.data?.email
-            val getFirstName = networkService.getUsersFunction().execute().body()?.data?.firstName
-            val getLastName = networkService.getUsersFunction().execute().body()?.data?.lastName
-            val getAvatar = networkService.getUsersFunction().execute().body()?.data?.avatar
+            getData=networkService.getUsersFunction().execute().body()!!.data!!.toMutableList()
         }
+        return getData
     }
 
-    fun getProductInfo(){
+    private fun getProductInfo(): MutableList<ProductModel.ResponseData>{
+        var getData= mutableListOf<ProductModel.ResponseData>()
         val retrofit= Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl("https://gorest.co.in/")
@@ -124,13 +135,9 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.IO) {
             val networkService = retrofit.create(GetMethodProducts::class.java)
-            val getData=networkService.getProductFunction().execute().body()?.data
-            val getId = networkService.getProductFunction().execute().body()?.data?.id
-            val getName = networkService.getProductFunction().execute().body()?.data?.name
-            val getDescription = networkService.getProductFunction().execute().body()?.data?.description
-            val getPrice = networkService.getProductFunction().execute().body()?.data?.price
-            val getDiscountAmount = networkService.getProductFunction().execute().body()?.data?.discountAmount
+            getData=networkService.getProductFunction().execute().body()!!.data!!.toMutableList()
         }
+        return getData
     }
 
 }
