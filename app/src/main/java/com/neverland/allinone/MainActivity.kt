@@ -78,8 +78,10 @@ class MainActivity : AppCompatActivity() {
 
             when {
                 getFirstButton.isChecked -> {
+                    userList.clear()
                 }
                 getSecondButton.isChecked -> {
+                    productList.clear()
                 }
                 postButton.isChecked -> {
                     funAddOrRemove(false,photoList)
